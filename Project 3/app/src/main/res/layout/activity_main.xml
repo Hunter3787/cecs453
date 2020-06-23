@@ -32,5 +32,4 @@
         <include layout="@layout/car_list" />
     </FrameLayout>
 
-
 </android.support.design.widget.CoordinatorLayout>
