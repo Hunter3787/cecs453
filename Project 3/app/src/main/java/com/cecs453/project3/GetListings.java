@@ -13,7 +13,7 @@ import java.util.HashMap;
 public class GetListings
         extends AsyncTask<Void, Void, Void> {
 
-    private static final String TAG = GetCars.class.getSimpleName();
+    private static final String TAG = GetListings.class.getSimpleName();
     private String url;
 
     public GetListings(String url){
@@ -35,13 +35,10 @@ public class GetListings
                 for (int i = 0; i < cars.length(); i++) {
                     JSONObject c = cars.getJSONObject(i);
 
-
                     HashMap<String, String> details = new HashMap<>();
 
-                    details.put("make", make);
-                    details.put("email", email);
 
-                    carsList.add(details);
+                    //carsList.add(details);
                 }
             } catch (final JSONException e) {
                 Log.e(TAG, "Json parsing error: " + e.getMessage());
@@ -55,7 +52,7 @@ public class GetListings
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        MainActivity.cars = carsList;
+       // MainActivity.cars = carsList;
     }
 }
 

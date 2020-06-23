@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 public class GetMake extends AsyncTask<Void, Void, Void> {
-
+    private AsyncResponse delegate = null;
     private static final String TAG = GetCars.class.getSimpleName();
     private HashMap<String, String> makes;
     private String url;
@@ -22,6 +22,7 @@ public class GetMake extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         HttpHandler sh = new HttpHandler();
+        makes = new HashMap<>();
 
         String jsonStr = sh.makeServiceCall(url);
 
@@ -35,11 +36,9 @@ public class GetMake extends AsyncTask<Void, Void, Void> {
                     JSONObject c = cars.getJSONObject(i);
 
                     String id = c.getString("id");
-                    String make = c.getString("vehicle make");
+                    String make = c.getString("vehicle_make");
 
-                    makes = new HashMap<>();
-                    makes.put("id", id);
-                    makes.put("make", make);
+                    makes.put(id, make);
                 }
             } catch (final JSONException e) {
                 Log.e(TAG, "Json parsing error: " + e.getMessage());
@@ -53,6 +52,6 @@ public class GetMake extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        MainActivity.carMakeList = makes;
+        MainActivity.carMakeHash = makes;
     }
 }

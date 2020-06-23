@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +19,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity
+        implements AdapterView.OnItemSelectedListener{
+
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private boolean mTwoPane = false;
     private static String carListURL = "https://thawing-beach-68207.herokuapp.com/carmakes";
     private static String carModelsULRPrefix = "https://thawing-beach-68207.herokuapp.com/carmodelmakes/";
     private static String carDetailsURLPrefix = "https://thawing-beach-68207.herokuapp.com/cars/";
-    public static HashMap<String,String> carMakeList;
-    public static HashMap<String,String> carModelList;
+    public static HashMap<String,String> carMakeHash;
+    public static ArrayList<HashMap<String,String>> carModelHashList;
     public static ArrayList<HashMap<String,String>> cars;
 
     @Override
@@ -33,29 +37,42 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        carMakeHash = new HashMap<>();
+        carModelHashList = new ArrayList<>();
+        ArrayList<String> makes = new ArrayList<>();
+
+        new GetMake(carListURL).execute();
+        String testURL = carModelsULRPrefix + "10/";
+        new GetModel(testURL);
+
+        for(String key : carMakeHash.keySet()){
+            String value = carMakeHash.get(key);
+            Log.e(TAG, "Car Make Hash to Array: " + key + " : " + value);
+            makes.add(value);
+        }
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        new GetMake(carListURL).execute();
-
         Spinner mMake = findViewById(R.id.spnMake);
-        Spinner mModel = findViewById(R.id.spnModel);
+
         RecyclerView recyclerView = findViewById(R.id.car_list);
 
-        recyclerView.setAdapter(new CustomCarAdapter(carMakeList));
+       // recyclerView.setAdapter(new CustomCarAdapter(cars));
 
         mMake.setOnItemSelectedListener(this);
         ArrayAdapter<String> makeA =
-                new ArrayAdapter<>(getApplication(),
-                        R.layout.spinner_item, carMakeList);
+                new ArrayAdapter<>(getApplicationContext(),
+                        R.layout.spinner_item, makes);
         makeA.setDropDownViewResource(R.layout.spinner_item);
         mMake.setAdapter(makeA);
 
+        Spinner mModel = findViewById(R.id.spnModel);
         mModel.setOnItemSelectedListener(this);
         ArrayAdapter<String> modelA =
                 new ArrayAdapter<>(this,
-                        R.layout.spinner_item, carMakeList);
+                        R.layout.spinner_item, makes);
         modelA.setDropDownViewResource(R.layout.spinner_item);
         mModel.setAdapter(modelA);
 
@@ -63,10 +80,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //Spinner mMake receives information and stores it in local variable.
         //Concatonate id from selected spinner one to url for option under spinner mModel.
         //Concatonate mModel to the previous URL string and get the available cars by make an model.
-
-
-
-
 
 
         if(findViewById(R.id.car_detail_container) != null)
@@ -82,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
-
 
     public class CustomCarAdapter extends RecyclerView.Adapter
             <CustomCarAdapter.ViewHolder> {
