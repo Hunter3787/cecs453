@@ -7,18 +7,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
-public class GetCars extends AsyncTask<Void, Void, Void> {
+public class GetMake extends AsyncTask<Void, Void, Void> {
 
     private static final String TAG = GetCars.class.getSimpleName();
-    private ArrayList<HashMap<String,String>> carsList;
+    private HashMap<String, String> makes;
     private String url;
 
-    public GetCars(){ }
-
-    public GetCars(String url){
+    public GetMake(String url){
         this.url = url;
     }
 
@@ -39,17 +36,10 @@ public class GetCars extends AsyncTask<Void, Void, Void> {
 
                     String id = c.getString("id");
                     String make = c.getString("vehicle make");
-                    String email = c.getString("email");
-                    String address = c.getString("address");
-                    String gender = c.getString("gender");
 
-                    HashMap<String, String> details = new HashMap<>();
-
-                    details.put("id", id);
-                    details.put("make", make);
-                    details.put("email", email);
-
-                    carsList.add(details);
+                    makes = new HashMap<>();
+                    makes.put("id", id);
+                    makes.put("make", make);
                 }
             } catch (final JSONException e) {
                 Log.e(TAG, "Json parsing error: " + e.getMessage());
@@ -63,8 +53,6 @@ public class GetCars extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        MainActivity.cars = carsList;
+        MainActivity.carMakeList = makes;
     }
-
-    public ArrayList<HashMap<String,String>> getCarsList(){ return carsList; }
 }

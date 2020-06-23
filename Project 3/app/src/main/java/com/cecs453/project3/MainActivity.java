@@ -1,8 +1,6 @@
 package com.cecs453.project3;
 
 
-import android.content.Context;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -25,7 +24,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static String carListURL = "https://thawing-beach-68207.herokuapp.com/carmakes";
     private static String carModelsULRPrefix = "https://thawing-beach-68207.herokuapp.com/carmodelmakes/";
     private static String carDetailsURLPrefix = "https://thawing-beach-68207.herokuapp.com/cars/";
-    private ArrayList<String> carsList;
+    public static HashMap<String,String> carMakeList;
+    public static HashMap<String,String> carModelList;
+    public static ArrayList<HashMap<String,String>> cars;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,27 +37,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        carsList = new ArrayList<>();
-        carsList.add("Car 1");
-        carsList.add("Car 2");
+        new GetMake(carListURL).execute();
 
         Spinner mMake = findViewById(R.id.spnMake);
         Spinner mModel = findViewById(R.id.spnModel);
         RecyclerView recyclerView = findViewById(R.id.car_list);
 
-        recyclerView.setAdapter(new CustomCarAdapter(carsList));
+        recyclerView.setAdapter(new CustomCarAdapter(carMakeList));
 
         mMake.setOnItemSelectedListener(this);
         ArrayAdapter<String> makeA =
                 new ArrayAdapter<>(getApplication(),
-                        R.layout.spinner_item, carsList);
+                        R.layout.spinner_item, carMakeList);
         makeA.setDropDownViewResource(R.layout.spinner_item);
         mMake.setAdapter(makeA);
 
         mModel.setOnItemSelectedListener(this);
         ArrayAdapter<String> modelA =
                 new ArrayAdapter<>(this,
-                        R.layout.spinner_item, carsList);
+                        R.layout.spinner_item, carMakeList);
         modelA.setDropDownViewResource(R.layout.spinner_item);
         mModel.setAdapter(modelA);
 
@@ -90,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         private List<String> mCars;
 
-        public CustomCarAdapter(List<String> cars){ mCars = cars; }
+        public CustomCarAdapter(List<String> inCars){ mCars = inCars; }
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
