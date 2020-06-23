@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.widget.Spinner;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,7 +23,15 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
+        Spinner mMake = findViewById(R.id.spnMake);
+        Spinner mModel = findViewById(R.id.spnModel);
         RecyclerView recyclerView = findViewById(R.id.car_list);
-        // recyclerView.setAdapter();
+
+        /*
+        if(findViewById(R.id.car_detail_container != null))
+            mTwoPane = true;
+            */
+
+
     }
 }
