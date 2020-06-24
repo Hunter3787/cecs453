@@ -1,30 +1,37 @@
 package com.cecs453.project3;
 
 import android.os.AsyncTask;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GetListings extends AsyncTask<Void, Void, Void> {
 
     private static final String TAG = GetListings.class.getSimpleName();
+    private WeakReference<MainActivity> weakReference;
     private ArrayList<HashMap<String,String>> carListing;
+    private ArrayList<Car> carArrayList;
+    private boolean twoPane;
     private String url;
 
-    public GetListings(String url){
+    public GetListings(String url,boolean twoPane ,MainActivity activity){
         this.url = url;
+        weakReference = new WeakReference<>(activity);
+        this.twoPane = twoPane;
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
         HttpHandler sh = new HttpHandler();
         carListing = new ArrayList<>();
+        carArrayList = new ArrayList<>();
 
         String jsonStr = sh.makeServiceCall(url);
 
@@ -67,6 +74,7 @@ public class GetListings extends AsyncTask<Void, Void, Void> {
                     listingDetails.put("vin_number", vin_number);
 
                     carListing.add(listingDetails);
+                    carArrayList.add(new Car(image_url, mileage, price, id));
                 }
             } catch (final JSONException e) {
                 Log.e(TAG, "Json parsing error: " + e.getMessage());
@@ -80,7 +88,12 @@ public class GetListings extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-
+        MainActivity.carListings = carListing;
+        RecyclerView recyclerView = weakReference.get().findViewById(R.id.car_list);
+        recyclerView.setAdapter
+                (new CustomCarAdapter(carArrayList,
+                        weakReference.get().getApplicationContext(), twoPane,
+                        weakReference.get()));
     }
 }
 

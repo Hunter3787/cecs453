@@ -7,7 +7,8 @@
     android:layout_centerInParent="false"
     android:layout_centerHorizontal="false"
     android:background="#6500BCD4"
-    app:layout_anchorGravity="center_horizontal">
+    app:layout_anchorGravity="center_horizontal"
+    tools:context=".CarDetailActivity">
 
     <ImageView
         android:id="@+id/imgCar"
@@ -50,7 +51,7 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/txtPrice"
+                android:id="@+id/imgCar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
