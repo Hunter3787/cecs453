@@ -7,13 +7,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class GetListings
-        extends AsyncTask<Void, Void, Void> {
+public class GetListings extends AsyncTask<Void, Void, Void> {
 
     private static final String TAG = GetListings.class.getSimpleName();
+    private ArrayList<HashMap<String,String>> carListing;
     private String url;
 
     public GetListings(String url){
@@ -23,6 +24,7 @@ public class GetListings
     @Override
     protected Void doInBackground(Void... voids) {
         HttpHandler sh = new HttpHandler();
+        carListing = new ArrayList<>();
 
         String jsonStr = sh.makeServiceCall(url);
 
@@ -30,15 +32,41 @@ public class GetListings
 
         if (jsonStr != null) {
             try {
-                JSONArray cars = new JSONArray(jsonStr);
+                JSONObject jsonObj = new JSONObject(jsonStr);
+
+                JSONArray cars = jsonObj.getJSONArray("lists");
 
                 for (int i = 0; i < cars.length(); i++) {
                     JSONObject c = cars.getJSONObject(i);
 
-                    HashMap<String, String> details = new HashMap<>();
+                    String color = c.getString("color");
+                    String created_at = c.getString("created_at");
+                    String id = c.getString("id");
+                    String image_url = c.getString("image_url");
+                    String mileage = c.getString("mileage");
+                    String model = c.getString("model");
+                    String price = c.getString("price");
+                    String veh_description = c.getString("veh_description");
+                    String vehicle_make = c.getString("vehicle_make");
+                    String vehicle_url = c.getString("vehicle_url");
+                    String vin_number = c.getString("vin_number");
 
+                    HashMap<String,String> listingDetails = new HashMap<>();
 
-                    //carsList.add(details);
+                    listingDetails.put("color_id", color);
+                    listingDetails.put("created_at", created_at);
+                    listingDetails.put("id", id);
+                    listingDetails.put("image_url", image_url);
+                    listingDetails.put("mileage", mileage);
+                    listingDetails.put("model", model);
+                    listingDetails.put("price", price);
+                    listingDetails.put("veh_description", veh_description);
+                    listingDetails.put("vehicle_make", vehicle_make);
+                    listingDetails.put("vehicle_url", vehicle_url);
+                    listingDetails.put("vin_number", vin_number);
+                    listingDetails.put("vin_number", vin_number);
+
+                    carListing.add(listingDetails);
                 }
             } catch (final JSONException e) {
                 Log.e(TAG, "Json parsing error: " + e.getMessage());
@@ -52,7 +80,7 @@ public class GetListings
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-       // MainActivity.cars = carsList;
+
     }
 }
 

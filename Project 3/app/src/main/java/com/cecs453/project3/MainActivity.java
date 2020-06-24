@@ -15,9 +15,11 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
         implements AdapterView.OnItemSelectedListener{
@@ -25,12 +27,16 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private boolean mTwoPane = false;
-    private static String carListURL = "https://thawing-beach-68207.herokuapp.com/carmakes";
-    private static String carModelsULRPrefix = "https://thawing-beach-68207.herokuapp.com/carmodelmakes/";
-    private static String carDetailsURLPrefix = "https://thawing-beach-68207.herokuapp.com/cars/";
+    private static final String carListURL = "https://thawing-beach-68207.herokuapp.com/carmakes";
+    private static final String carModelsULRPrefix = "https://thawing-beach-68207.herokuapp.com/carmodelmakes/";
+    private static final String carDetailsURLPrefix = "https://thawing-beach-68207.herokuapp.com/cars/";
+
+    private ArrayList<String> modelNames;
     public static HashMap<String,String> carMakeHash;
     public static ArrayList<HashMap<String,String>> carModelHashList;
-    public static ArrayList<HashMap<String,String>> cars;
+    public static ArrayList<HashMap<String,String>> carListings;
+    public static ArrayList<HashMap<String,String>> carDetails;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,57 +44,54 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         carMakeHash = new HashMap<>();
+        modelNames = new ArrayList<>();
         carModelHashList = new ArrayList<>();
-        ArrayList<String> makes = new ArrayList<>();
+        carListings = new ArrayList<>();
+        carDetails = new ArrayList<>();
 
-        new GetMake(carListURL).execute();
-        String testURL = carModelsULRPrefix + "10/";
-        new GetModel(testURL);
+        new GetMake(carListURL, this).execute();
 
-        for(String key : carMakeHash.keySet()){
-            String value = carMakeHash.get(key);
-            Log.e(TAG, "Car Make Hash to Array: " + key + " : " + value);
-            makes.add(value);
-        }
+        String carListTestURL = carDetailsURLPrefix + "10/20/92603";
+        new GetListings(carListTestURL).execute();
+
+        String carByIDTestURL = carDetailsURLPrefix +"3169";
+        new GetCarDetailByID(carByIDTestURL).execute();
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        Spinner mMake = findViewById(R.id.spnMake);
-
         RecyclerView recyclerView = findViewById(R.id.car_list);
-
-       // recyclerView.setAdapter(new CustomCarAdapter(cars));
-
-        mMake.setOnItemSelectedListener(this);
-        ArrayAdapter<String> makeA =
-                new ArrayAdapter<>(getApplicationContext(),
-                        R.layout.spinner_item, makes);
-        makeA.setDropDownViewResource(R.layout.spinner_item);
-        mMake.setAdapter(makeA);
-
-        Spinner mModel = findViewById(R.id.spnModel);
-        mModel.setOnItemSelectedListener(this);
-        ArrayAdapter<String> modelA =
-                new ArrayAdapter<>(this,
-                        R.layout.spinner_item, makes);
-        modelA.setDropDownViewResource(R.layout.spinner_item);
-        mModel.setAdapter(modelA);
-
-
-        //Spinner mMake receives information and stores it in local variable.
-        //Concatonate id from selected spinner one to url for option under spinner mModel.
-        //Concatonate mModel to the previous URL string and get the available cars by make an model.
-
-
+        
         if(findViewById(R.id.car_detail_container) != null)
             mTwoPane = true;
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String affix = "";
+        switch(parent.getId()){
+            case R.id.spnMake:
+                for(String comp : carMakeHash.keySet())
+                    if( carMakeHash.get(comp) == parent.getItemAtPosition(position).toString())
+                        affix = comp;
+                String modelURL = carModelsULRPrefix + affix;
 
+                new GetModel(modelURL, MainActivity.this).execute();
+                break;
+
+            case R.id.spnModel:
+
+
+                break;
+
+            default:
+                break;
+        }
+
+
+        Log.e(TAG, "Picked: " + parent.getItemAtPosition(position).toString());
     }
 
     @Override

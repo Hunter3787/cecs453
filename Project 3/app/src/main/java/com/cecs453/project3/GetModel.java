@@ -2,22 +2,28 @@ package com.cecs453.project3;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class GetModel extends AsyncTask<Void, Void, Void> {
 
-    private static final String TAG = GetCars.class.getSimpleName();
+    private static final String TAG = GetModel.class.getSimpleName();
     private ArrayList<HashMap<String,String>> models;
+    private WeakReference<MainActivity> weakReference;
     private String url;
 
-    public GetModel(String url){
+    public GetModel(String url, MainActivity activity){
         this.url = url;
+        weakReference = new WeakReference<>(activity);
     }
 
     @Override
@@ -46,7 +52,7 @@ public class GetModel extends AsyncTask<Void, Void, Void> {
                     between.put("model", model);
                     between.put("vehicle_make_id", vehicle_make_id);
 
-                    MainActivity.carModelHashList.add(between);
+                    models.add(between);
                 }
             } catch (final JSONException e) {
                 Log.e(TAG, "Json parsing error: " + e.getMessage());
@@ -61,11 +67,20 @@ public class GetModel extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         MainActivity.carModelHashList = models;
-        for(HashMap carMakeHash : MainActivity.carModelHashList)
-            for(Object key : carMakeHash.keySet()){
-                String value = (String) carMakeHash.get(key);
-                Log.e(TAG, "Car Make Hash to Array: " + key + " : " + value);
-            }
+        ArrayList<String> modelNames = new ArrayList<>();
+
+        for(HashMap<String, String> read : models) {
+            modelNames.add(read.get("model"));
+            Log.e(TAG, read.get("model"));
+        }
+
+        Spinner mModel = weakReference.get().findViewById(R.id.spnModel);
+        mModel.setOnItemSelectedListener(weakReference.get());
+        ArrayAdapter<String> modelA =
+                new ArrayAdapter<>(weakReference.get(),
+                        R.layout.spinner_item, modelNames);
+        modelA.setDropDownViewResource(R.layout.spinner_item);
+        mModel.setAdapter(modelA);
     }
 }
 

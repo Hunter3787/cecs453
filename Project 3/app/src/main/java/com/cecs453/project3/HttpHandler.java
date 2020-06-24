@@ -37,6 +37,7 @@ public class HttpHandler {
         } catch (Exception e) {
             Log.e(TAG, "Exception: " + e.getMessage());
         }
+        Log.e(TAG, "URL Got");
         return response;
     }
 

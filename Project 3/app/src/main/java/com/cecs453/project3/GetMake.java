@@ -1,22 +1,35 @@
 package com.cecs453.project3;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GetMake extends AsyncTask<Void, Void, Void> {
-    private AsyncResponse delegate = null;
-    private static final String TAG = GetCars.class.getSimpleName();
+
+    private static final String TAG = GetMake.class.getSimpleName();
     private HashMap<String, String> makes;
+    private WeakReference<MainActivity> weakReference;
     private String url;
 
-    public GetMake(String url){
+    public GetMake(String url, MainActivity activity){
         this.url = url;
+        weakReference = new WeakReference<>(activity);
+    }
+
+    @Override
+    protected void onPreExecute(){
+        super.onPreExecute();
     }
 
     @Override
@@ -53,5 +66,19 @@ public class GetMake extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         MainActivity.carMakeHash = makes;
+        ArrayList<String> arrayList = new ArrayList<>();
+
+        for(String key : makes.keySet()){
+            String value = makes.get(key);
+            arrayList.add(value);
+        }
+
+        Spinner mMake = weakReference.get().findViewById(R.id.spnMake);
+        mMake.setOnItemSelectedListener(weakReference.get());
+        ArrayAdapter<String> makeA =
+                new ArrayAdapter<>(weakReference.get(),
+                        R.layout.spinner_item, arrayList);
+        makeA.setDropDownViewResource(R.layout.spinner_item);
+        mMake.setAdapter(makeA);
     }
 }
