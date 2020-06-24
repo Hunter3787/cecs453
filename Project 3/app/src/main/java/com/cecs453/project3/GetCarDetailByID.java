@@ -7,13 +7,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GetCarDetailByID extends AsyncTask<Void,Void,Void> {
 
     private static final String TAG = GetListings.class.getSimpleName();
-    private ArrayList<HashMap<String,String>> carListing;
+    private HashMap<String,String> carListing;
     private String url;
 
     public GetCarDetailByID(String url){
@@ -23,7 +22,7 @@ public class GetCarDetailByID extends AsyncTask<Void,Void,Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         HttpHandler sh = new HttpHandler();
-        carListing = new ArrayList<>();
+        carListing = new HashMap<>();
 
         String jsonStr = sh.makeServiceCall(url);
 
@@ -61,34 +60,30 @@ public class GetCarDetailByID extends AsyncTask<Void,Void,Void> {
                     String vin_number = c.getString("vin_number");
                     String zipcode_id = c.getString("zipcode_id");
 
-                    HashMap<String, String> listingDetails = new HashMap<>();
-
-                    listingDetails.put("id", id);
-                    listingDetails.put("color_id", color_id);
-                    listingDetails.put("content_local_url", content_local_url);
-                    listingDetails.put("content_url", content_url);
-                    listingDetails.put("created_at", created_at);
-                    listingDetails.put("currency_id", currency_id);
-                    listingDetails.put("image_local_url", image_local_url);
-                    listingDetails.put("image_url", image_url);
-                    listingDetails.put("is_active", is_active);
-                    listingDetails.put("mileage", mileage);
-                    listingDetails.put("onlinecardealer_id", onlinecardealer_id);
-                    listingDetails.put("price", price);
-                    listingDetails.put("seller_address", seller_address);
-                    listingDetails.put("seller_address_locality", seller_address_locality);
-                    listingDetails.put("seller_address_region", seller_address_region);
-                    listingDetails.put("seller_name", seller_name);
-                    listingDetails.put("seller_telnumber", seller_telnumber);
-                    listingDetails.put("updated_at", updated_at);
-                    listingDetails.put("veh_description", veh_description);
-                    listingDetails.put("vehicle_make_id", vehicle_make_id);
-                    listingDetails.put("vehicle_model_id", vehicle_model_id);
-                    listingDetails.put("vehicle_url", vehicle_url);
-                    listingDetails.put("vin_number", vin_number);
-                    listingDetails.put("zipcode_id", zipcode_id);
-
-                    carListing.add(listingDetails);
+                    carListing.put("id", id);
+                    carListing.put("color_id", color_id);
+                    carListing.put("content_local_url", content_local_url);
+                    carListing.put("content_url", content_url);
+                    carListing.put("created_at", created_at);
+                    carListing.put("currency_id", currency_id);
+                    carListing.put("image_local_url", image_local_url);
+                    carListing.put("image_url", image_url);
+                    carListing.put("is_active", is_active);
+                    carListing.put("mileage", mileage);
+                    carListing.put("onlinecardealer_id", onlinecardealer_id);
+                    carListing.put("price", price);
+                    carListing.put("seller_address", seller_address);
+                    carListing.put("seller_address_locality", seller_address_locality);
+                    carListing.put("seller_address_region", seller_address_region);
+                    carListing.put("seller_name", seller_name);
+                    carListing.put("seller_telnumber", seller_telnumber);
+                    carListing.put("updated_at", updated_at);
+                    carListing.put("veh_description", veh_description);
+                    carListing.put("vehicle_make_id", vehicle_make_id);
+                    carListing.put("vehicle_model_id", vehicle_model_id);
+                    carListing.put("vehicle_url", vehicle_url);
+                    carListing.put("vin_number", vin_number);
+                    carListing.put("zipcode_id", zipcode_id);
                 }
             } catch (final JSONException e) {
                 Log.e(TAG, "Json parsing error: " + e.getMessage());
@@ -101,7 +96,8 @@ public class GetCarDetailByID extends AsyncTask<Void,Void,Void> {
 
     @Override
     protected  void onPostExecute(Void aVoid){
-
+        super.onPostExecute(aVoid);
+        MainActivity.carDetails = carListing;
     }
 }
 

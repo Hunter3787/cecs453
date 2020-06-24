@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#6500BCD4"
     app:layout_constraintGuide_percent=".9">
 
     <TextView
@@ -47,7 +46,10 @@
 
     <TextView
         android:id="@+id/txtDetails"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="24dp"
+        android:background="#06870B"
         android:text="Details"
         app:layout_constraintBottom_toTopOf="@+id/guideline4"
         app:layout_constraintEnd_toStartOf="@+id/rightGuideline"
@@ -56,7 +58,7 @@
         app:layout_constraintStart_toStartOf="@+id/leftGuideline"
         app:layout_constraintTop_toBottomOf="@+id/txtMake"
         app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintWidth_percent=".65" />
+        app:layout_constraintWidth_percent=".5" />
 
     <TextView
         android:id="@+id/txtLastUpdate"

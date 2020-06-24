@@ -3,6 +3,7 @@ package com.cecs453.project3;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,15 +16,16 @@ import java.util.ArrayList;
 public class CustomCarAdapter
         extends RecyclerView.Adapter <CustomCarAdapter.ViewHolder> {
 
+    private static final String TAG = CustomCarAdapter.class.getSimpleName();
     private ArrayList<Car> mCars;
     private Context context;
     private WeakReference<MainActivity> weakReference;
     private boolean mTwoPane;
 
-    public CustomCarAdapter(ArrayList<Car> inCars, Context context,
+    public CustomCarAdapter(ArrayList<Car> inCars,
                             boolean twoPane, MainActivity activity){
         mCars = inCars;
-        this.context = context;
+        this.context = activity.getApplicationContext();
         mTwoPane = twoPane;
         weakReference = new WeakReference<>(activity);
     }
@@ -36,18 +38,18 @@ public class CustomCarAdapter
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position){
-        holder.mItem = mCars.get(position);
+    public void onBindViewHolder(final ViewHolder holder, final int position){
 
         new GetImageTask(mCars.get(position).imgURL, holder.mImgView);
 
-        holder.mPriceView.setText(mCars.get(position).price);
-        holder.mDetail.setText(mCars.get(position).mileage);
+        holder.mItem = mCars.get(position);
+        holder.mPriceView.setText("$" + mCars.get(position).price + "0");
+        holder.mDetail.setText(mCars.get(position).mileage + " miles");
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(mTwoPane){
-                    String selectedCar = holder.mItem.carID;
+                    String selectedCar = mCars.get(holder.getAdapterPosition()).carID;
                     CarDetailFragment fragment = CarDetailFragment.newInstance(selectedCar);
                     weakReference.get()
                             .getSupportFragmentManager()
@@ -55,15 +57,13 @@ public class CustomCarAdapter
                             .replace(R.id.car_detail_container,fragment)
                             .addToBackStack(null)
                             .commit();
-                }/*
+                }
                 else{
                     Context context = v.getContext();
-                    Intent intent = new Intent(context,
-                            SongDetailActivity.class);
-                    intent.putExtra(SongUtils.SONG_ID_KEY,
-                            holder.getAdapterPosition());
+                    Intent intent = new Intent(context, CarDetailActivity.class);
+                    intent.putExtra("item_id", mCars.get(holder.getAdapterPosition()).carID);
                     context.startActivity(intent);
-                }*/
+                }
             }
         });
     }

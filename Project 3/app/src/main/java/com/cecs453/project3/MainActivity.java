@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity
     public static HashMap<String,String> carMakeHash;
     public static ArrayList<HashMap<String,String>> carModelHashList;
     public static ArrayList<HashMap<String,String>> carListings;
-    public static ArrayList<HashMap<String,String>> carDetails;
+    public static HashMap<String,String> carDetails;
 
 
     @Override
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity
         modelNames = new ArrayList<>();
         carModelHashList = new ArrayList<>();
         carListings = new ArrayList<>();
-        carDetails = new ArrayList<>();
+        carDetails = new HashMap<>();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -48,8 +49,7 @@ public class MainActivity extends AppCompatActivity
         if(findViewById(R.id.car_detail_container) != null)
             mTwoPane = true;
 
-        RecyclerView recyclerView =  findViewById(R.id.car_list);
-        recyclerView.setAdapter(null);
+        Log.e(TAG, "TWO PANE : " + mTwoPane);
     }
 
     @Override

@@ -35,6 +35,7 @@ public class GetImageTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected void onPostExecute(Void avoid){
+        super.onPostExecute(avoid);
         view.setImageBitmap(bImage);
     }
 }

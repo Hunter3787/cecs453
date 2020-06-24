@@ -1,6 +1,7 @@
 package com.cecs453.project3;
 
 import android.os.AsyncTask;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
@@ -89,11 +90,12 @@ public class GetListings extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         MainActivity.carListings = carListing;
+
         RecyclerView recyclerView = weakReference.get().findViewById(R.id.car_list);
+        RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(weakReference.get().getApplicationContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter
-                (new CustomCarAdapter(carArrayList,
-                        weakReference.get().getApplicationContext(), twoPane,
-                        weakReference.get()));
+                (new CustomCarAdapter(carArrayList, twoPane, weakReference.get()));
     }
 }
 
