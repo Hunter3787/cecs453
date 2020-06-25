@@ -25,12 +25,10 @@
     </android.support.design.widget.AppBarLayout>
 
     <FrameLayout
-        android:id="@+id/car_detail_container"
+        android:id="@+id/car_detail_container_phone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <include layout="@layout/car_list" />
 
     </FrameLayout>
 </android.support.design.widget.CoordinatorLayout>

@@ -2,9 +2,9 @@ package com.cecs453.project3;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import java.util.ArrayList;
@@ -16,12 +16,10 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private boolean mTwoPane = false;
+    public static boolean mTwoPane = false;
     private static final String carMakesURL = "https://thawing-beach-68207.herokuapp.com/carmakes";
     private static final String carModelsULRPrefix = "https://thawing-beach-68207.herokuapp.com/carmodelmakes/";
     private static final String carDetailsURLPrefix = "https://thawing-beach-68207.herokuapp.com/cars/";
-
-    private ArrayList<String> modelNames;
 
     public static HashMap<String,String> carMakeHash;
     public static ArrayList<HashMap<String,String>> carModelHashList;
@@ -35,7 +33,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         carMakeHash = new HashMap<>();
-        modelNames = new ArrayList<>();
         carModelHashList = new ArrayList<>();
         carListings = new ArrayList<>();
         carDetails = new HashMap<>();
@@ -49,7 +46,9 @@ public class MainActivity extends AppCompatActivity
         if(findViewById(R.id.car_detail_container) != null)
             mTwoPane = true;
 
-        Log.e(TAG, "TWO PANE : " + mTwoPane);
+        RecyclerView recyclerView = findViewById(R.id.car_list);
+        RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
     }
 
     @Override
@@ -78,7 +77,7 @@ public class MainActivity extends AppCompatActivity
                 affix = vehicle_make_id + "/" + identity + "/" + "92603";
                 String listURL = carDetailsURLPrefix + affix;
 
-                new GetListings(listURL,mTwoPane, this).execute();
+                new GetListings(listURL, this).execute();
                 break;
 
             default:

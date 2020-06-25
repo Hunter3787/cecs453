@@ -19,13 +19,11 @@ public class GetListings extends AsyncTask<Void, Void, Void> {
     private WeakReference<MainActivity> weakReference;
     private ArrayList<HashMap<String,String>> carListing;
     private ArrayList<Car> carArrayList;
-    private boolean twoPane;
     private String url;
 
-    public GetListings(String url,boolean twoPane ,MainActivity activity){
+    public GetListings(String url, MainActivity activity){
         this.url = url;
         weakReference = new WeakReference<>(activity);
-        this.twoPane = twoPane;
     }
 
     @Override
@@ -92,10 +90,8 @@ public class GetListings extends AsyncTask<Void, Void, Void> {
         MainActivity.carListings = carListing;
 
         RecyclerView recyclerView = weakReference.get().findViewById(R.id.car_list);
-        RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(weakReference.get().getApplicationContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter
-                (new CustomCarAdapter(carArrayList, twoPane, weakReference.get()));
+                (new CustomCarAdapter(carArrayList, weakReference.get()));
     }
 }
 

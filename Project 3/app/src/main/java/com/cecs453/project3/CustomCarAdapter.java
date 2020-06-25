@@ -1,9 +1,9 @@
 package com.cecs453.project3;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,16 +17,15 @@ public class CustomCarAdapter
         extends RecyclerView.Adapter <CustomCarAdapter.ViewHolder> {
 
     private static final String TAG = CustomCarAdapter.class.getSimpleName();
+    private static final String carDetailsURLPrefix = "https://thawing-beach-68207.herokuapp.com/cars/";
+
     private ArrayList<Car> mCars;
     private Context context;
     private WeakReference<MainActivity> weakReference;
-    private boolean mTwoPane;
 
-    public CustomCarAdapter(ArrayList<Car> inCars,
-                            boolean twoPane, MainActivity activity){
+    public CustomCarAdapter(ArrayList<Car> inCars, MainActivity activity){
         mCars = inCars;
         this.context = activity.getApplicationContext();
-        mTwoPane = twoPane;
         weakReference = new WeakReference<>(activity);
     }
 
@@ -40,7 +39,7 @@ public class CustomCarAdapter
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position){
 
-        new GetImageTask(mCars.get(position).imgURL, holder.mImgView);
+        new GetImageTask(mCars.get(position).imgURL, holder.mImgView).execute();
 
         holder.mItem = mCars.get(position);
         holder.mPriceView.setText("$" + mCars.get(position).price + "0");
@@ -48,9 +47,11 @@ public class CustomCarAdapter
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mTwoPane){
-                    String selectedCar = mCars.get(holder.getAdapterPosition()).carID;
-                    CarDetailFragment fragment = CarDetailFragment.newInstance(selectedCar);
+                new GetCarDetailByID(carDetailsURLPrefix +
+                        mCars.get(holder.getAdapterPosition()).carID).execute();
+
+                if(MainActivity.mTwoPane){
+                    CarDetailFragment fragment = new CarDetailFragment();
                     weakReference.get()
                             .getSupportFragmentManager()
                             .beginTransaction()
@@ -83,7 +84,7 @@ public class CustomCarAdapter
         ViewHolder(View view) {
             super(view);
             mView = view;
-            mImgView = view.findViewById(R.id.imgCar);
+            mImgView = view.findViewById(R.id.thumbnail);
             mPriceView =  view.findViewById(R.id.price);
             mDetail=  view.findViewById(R.id.detail);
         }
